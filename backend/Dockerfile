@@ -7,12 +7,12 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libmysqlclient-dev \
     zip \
-    unzip \
-    libpdo-mysql-dev
+    unzip
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
