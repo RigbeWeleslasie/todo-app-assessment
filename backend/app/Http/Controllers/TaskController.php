@@ -11,6 +11,9 @@ class TaskController extends Controller
 
     public function index(Request $request) {
         $token = $this->getToken($request);
+        if (!$token) {
+            return response()->json([]);
+        }
         return response()->json(
             Task::where('device_token', $token)->latest()->get()
         );
