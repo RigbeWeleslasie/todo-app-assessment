@@ -7,9 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->string('device_token')->nullable()->index();
-        });
+        if (!Schema::hasColumn('tasks', 'device_token')) {
+            Schema::table('tasks', function (Blueprint $table) {
+                $table->string('device_token')->nullable()->index();
+            });
+        }
     }
 
     public function down(): void
