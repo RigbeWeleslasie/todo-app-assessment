@@ -5,10 +5,8 @@ import useFetchTasks from './useFetchTasks';
 export default function useTasks() {
     const { tasks, setTasks, loading, error, setError } = useFetchTasks();
 
-    const addTask = (title, description = '', due_date = null, priority = 'medium') => {
-        api.post('/tasks', { title, description, due_date, priority, completed: false })
-            .then(res => setTasks(prev => [res.data, ...prev]))
-            .catch(err => handleError(err, setError, 'Failed to add task.'));
+    const addTask = (savedTask) => {
+        setTasks(prev => [savedTask, ...prev]);
     };
 
     const completeTask = (task) => {
