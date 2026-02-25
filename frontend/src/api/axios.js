@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 const getDeviceToken = () => {
     let token = localStorage.getItem('device_token');
     if (!token) {
@@ -13,8 +14,12 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'X-Device-Token': getDeviceToken(),
     }
+});
+
+api.interceptors.request.use(config => {
+    config.headers['X-Device-Token'] = getDeviceToken();
+    return config;
 });
 
 export default api;
