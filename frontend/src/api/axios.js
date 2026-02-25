@@ -10,7 +10,7 @@ const getDeviceToken = () => {
 };
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api',
+    baseURL: process.env.REACT_APP_API_URL || 'https://todo-app-assessment-production.up.railway.app/api',
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -21,5 +21,10 @@ api.interceptors.request.use(config => {
     config.headers['X-Device-Token'] = getDeviceToken();
     return config;
 });
+
+export async function saveTask(task) {
+    const response = await api.post('/tasks', task);
+    return response.data;
+}
 
 export default api;
