@@ -1,13 +1,13 @@
-# Task Tracker — Full Stack Todo App
+# Task Tracker - Full Stack Todo App
 
 A simple, modern task management app built with **React** on the frontend and **Laravel** on the backend.  
-It’s designed to be fast, responsive, and easy to use — with automatic device-based task isolation (no login required).
+It’s designed to be fast, responsive, and easy to use - with automatic device-based task isolation (no login required).
 
 ---
 
 ## Live Demo
 
-- Frontend: https://todo-app-assessment-git-main-rigbes-projects.vercel.app  
+- Frontend: https://todo-app-assessment-git-main-rigbes-projects.vercel.app/  
 - Backend API: https://todo-app-assessment-production.up.railway.app/api/tasks  
 
 ---
@@ -60,7 +60,7 @@ cd todo-app-assessment/frontend
 npm install
 
 # Create environment file
-echo "REACT_APP_API_URL=http://127.0.0.1:8000/api" > .env
+echo "REACT_APP_API_URL=https://todo-app-assessment-production.up.railway.app/api/" > .env
 
 # Start development server
 npm start
@@ -114,7 +114,7 @@ All endpoints require the `X-Device-Token` header for device-based isolation.
 ```bash
 curl -X POST https://todo-app-assessment-production.up.railway.app/api/tasks \
   -H "Content-Type: application/json" \
-  -H "X-Device-Token: your-device-token" \
+  -H "X-Device-Token: device-token" \
   -d '{"title": "Buy groceries", "priority": "high", "due_date": "2026-03-01"}'
 ```
 
@@ -152,29 +152,7 @@ Every API request sends this token via the `X-Device-Token` header. The backend 
 
 ## Docker & Deployment
 
-### Backend — Railway (Docker)
-
-```dockerfile
-FROM php:8.2-cli
-
-RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev \
-    libxml2-dev libmariadb-dev zip unzip
-
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-WORKDIR /var/www
-COPY . .
-
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
-RUN chmod -R 775 storage bootstrap/cache
-
-EXPOSE 8000
-CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
-```
-
+### Backend(Laravel — Railway (Docker)
 ### Railway Environment Variables
 
 | Variable | Description |
@@ -203,12 +181,6 @@ REACT_APP_API_URL=https://todo-app-assessment-production.up.railway.app/api
 ## Backend Validation Rules
 
 | Field | Rules |
-|---|---|
-| `title` | Required, string, max 255 characters |
-| `description` | Optional, string, max 1000 characters |
-| `due_date` | Optional, valid date, must be today or future |
-| `priority` | Optional, one of: `low`, `medium`, `high` |
-| `completed` | Optional, boolean |
 
 ---
 
@@ -221,8 +193,6 @@ REACT_APP_API_URL=https://todo-app-assessment-production.up.railway.app/api
 | Duplicate migration columns | Used `Schema::hasColumn()` guard |
 | Container stopping immediately | Removed conflicting `railway.json` start command |
 | Tasks visible to all devices | Implemented device token isolation via `X-Device-Token` header |
-| Past dates selectable | Added `min={today}` to date input |
-| Calendar not showing tasks | Fixed date format normalization (`slice(0, 10)`) |
 
 ---
 
