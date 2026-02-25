@@ -1,34 +1,26 @@
-FROM php:8.2-cli
+FROM php:8.2-apache
 
-# Install dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libmariadb-dev \
-    zip \
-    unzip
+    git curl libpng-dev libonig-dev libxml2-dev libmariadb-dev zip unzip
 
-# Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath
+RUN echo "Listen 8000" > /etc/apache2/ports.conf
+RUN a2enmod rewrite
 
-# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
-WORKDIR /var/www
+WORKDIR /var/www/html
 
-# Copy files
 COPY . .
 
-# Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
-# Set permissions
 RUN chmod -R 775 storage bootstrap/cache
+
+COPY .docker/apache.conf /etc/apache2/sites-available/000-default.conf
+
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
 EXPOSE 8000
 
-CMD php artisan config:cache && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
+CMD php artisan config:cache && php artisan migrate --force && apache2-foreground
