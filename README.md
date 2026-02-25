@@ -98,7 +98,7 @@ curl -X POST http://localhost:8000/api/tasks \
 
 ## Deployment
 
-### Backend — Laravel on Localhost (Currently)
+### Backend - Laravel on Localhost (Currently)
 The backend is currently running locally for development. Previously deployed on:
 - **Railway** - Initial deployment
 - **Render** - After Railway free tier limits were exceeded
