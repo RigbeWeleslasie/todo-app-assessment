@@ -1,98 +1,79 @@
-# Task Tracker — Full Stack Todo App
+# Task Tracker - Full Stack Todo App
 
-A simple, modern task management app built with **React** on the frontend and **Laravel** on the backend.  
-It’s designed to be fast, responsive, and easy to use — with automatic device-based task isolation (no login required).
+A modern, responsive task management application built with **React** on the frontend and **Laravel** on the backend. The app is designed to be fast and frictionless - no account or login required. Instead, it uses a device-based token system to automatically isolate each user's tasks, so your tasks are private to your browser without any sign-up friction.
+
+Users can create tasks with priorities, due dates, and notes, track their progress, filter by status, and manage everything from a clean, mobile-friendly interface.
 
 ---
 
 ## Live Demo
 
-- Frontend: https://todo-app-assessment-git-main-rigbes-projects.vercel.app  
-- Backend API: https://todo-app-assessment-production.up.railway.app/api/tasks  
+- **Frontend:** [https://todo-app-assessment-git-main-rigbes-projects.vercel.app/](https://todo-app-assessment-git-main-rigbes-projects.vercel.app/)
+- **Backend API:** [https://todo-app-assessment-production.up.railway.app/api/tasks](https://todo-app-assessment-production.up.railway.app/api/tasks)
 
 ---
 
 ## Features
 
-- Create, edit, and delete tasks (CRUD)
+- Create, edit, and delete tasks (full CRUD)
 - Priority levels: Low, Medium, High (color-coded)
-- Due dates with validation (today + future only)
-- Calendar view for better visualization
-- Task filtering (All, Pending, Completed)
+- Due dates with validation (today and future dates only)
+- Calendar view for better task visualization
+- Task filtering: All, Pending, Completed
 - Progress tracker showing completion percentage
-- Device-based isolation (each device sees its own tasks)
-- Fully responsive (mobile + desktop)
-- Instant UI updates
+- Device-based task isolation (no login required - each device sees only its own tasks)
+- Fully responsive layout (mobile + desktop)
+- Instant UI updates without page reloads
 
 ---
 
 ## Tech Stack
 
 ### Frontend
-- React 19
-- Tailwind CSS 3
+- React
+- Tailwind CSS
 - Axios
 - Vercel (deployment)
 
 ### Backend
-- Laravel (PHP 8.2)
+- Laravel (PHP)
 - MySQL
 - Docker
 - Railway (deployment)
 
 ---
 
-### Prerequisites
+## Local Setup
 
+### Prerequisites
 - Node.js >= 18
 - PHP >= 8.2
 - Composer
 - MySQL
 
-### Frontend Setup
+### Frontend
 
 ```bash
-# Clone the repository
 git clone https://github.com/RigbeWeleslasie/todo-app-assessment.git
 cd todo-app-assessment/frontend
 
-# Install dependencies
 npm install
 
-# Create environment file
-echo "REACT_APP_API_URL=http://127.0.0.1:8000/api" > .env
+echo "REACT_APP_API_URL=https://todo-app-assessment-production.up.railway.app/api" > .env
 
-# Start development server
 npm start
 ```
 
-### Backend Setup
+### Backend
 
 ```bash
 cd todo-app-assessment/backend
 
-# Install dependencies
 composer install
 
-# Copy environment file
 cp .env.example .env
 
 # Configure your database in .env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=todo_app
-DB_USERNAME=root
-DB_PASSWORD=
-
-# Generate app key
-php artisan key:generate
-
-# Run migrations
-php artisan migrate
-
-# Start development server
-php artisan serve
 ```
 
 ---
@@ -102,7 +83,7 @@ php artisan serve
 All endpoints require the `X-Device-Token` header for device-based isolation.
 
 | Method | Endpoint | Description |
-|---|---|---|
+|--------|----------|-------------|
 | `GET` | `/api/tasks` | Get all tasks for device |
 | `POST` | `/api/tasks` | Create a new task |
 | `GET` | `/api/tasks/{id}` | Get a specific task |
@@ -138,47 +119,23 @@ curl -X POST https://todo-app-assessment-production.up.railway.app/api/tasks \
 
 ## Device-Based Isolation
 
-This app uses a unique device token stored in `localStorage` to isolate tasks per device — no login required.
+This app uses a unique token stored in `localStorage` to identify each device - no login required. On a user's first visit, a token is generated and stored in their browser. Every subsequent API request sends this token via the `X-Device-Token` header, and the backend filters tasks by it so each device only ever sees its own data.
 
 ```javascript
-// Auto-generated on first visit and stored in localStorage
 const token = 'dt_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
 localStorage.setItem('device_token', token);
 ```
 
-Every API request sends this token via the `X-Device-Token` header. The backend filters tasks by this token, ensuring each device only sees its own tasks.
-
 ---
 
-## Docker & Deployment
+## Deployment
 
-### Backend — Railway (Docker)
+### Backend - Laravel on Railway (Docker)
 
-```dockerfile
-FROM php:8.2-cli
-
-RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev \
-    libxml2-dev libmariadb-dev zip unzip
-
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-WORKDIR /var/www
-COPY . .
-
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
-RUN chmod -R 775 storage bootstrap/cache
-
-EXPOSE 8000
-CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
-```
-
-### Railway Environment Variables
+The backend is containerized with Docker and deployed on Railway. The following environment variables must be configured in the Railway dashboard:
 
 | Variable | Description |
-|---|---|
+|----------|-------------|
 | `APP_KEY` | Laravel application key |
 | `APP_ENV` | `production` |
 | `APP_DEBUG` | `false` |
@@ -189,11 +146,10 @@ CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.
 | `DB_USERNAME` | `${{MySQL.MYSQLUSER}}` |
 | `DB_PASSWORD` | `${{MySQL.MYSQLPASSWORD}}` |
 
-### Frontend — Vercel
+### Frontend - React on Vercel
 
-The frontend is deployed automatically on every push to `main` via Vercel's GitHub integration.
+The frontend deploys automatically on every push to `main` via Vercel's GitHub integration. One environment variable is required:
 
-**Environment Variables on Vercel:**
 ```
 REACT_APP_API_URL=https://todo-app-assessment-production.up.railway.app/api
 ```
@@ -201,29 +157,14 @@ REACT_APP_API_URL=https://todo-app-assessment-production.up.railway.app/api
 ---
 
 ## Backend Validation Rules
+The API validates all incoming requests. The `title` is required and must be a string. `description` is optional. `due_date` must be today or a future date. `priority` accepts `low`, `medium`, or `high`. `completed` is a boolean flag.
 
-| Field | Rules |
-|---|---|
-| `title` | Required, string, max 255 characters |
-| `description` | Optional, string, max 1000 characters |
-| `due_date` | Optional, valid date, must be today or future |
-| `priority` | Optional, one of: `low`, `medium`, `high` |
-| `completed` | Optional, boolean |
-
----
-
-## Development Challenges & Solutions
+## Challenges & Solutions
 
 | Challenge | Solution |
-|---|---|
-| MySQL socket connection error | Added `DB_SOCKET=` (empty) to force TCP |
-| DB variables not resolving | Used Railway's `${{MySQL.VARIABLE}}` reference syntax |
-| Duplicate migration columns | Used `Schema::hasColumn()` guard |
-| Container stopping immediately | Removed conflicting `railway.json` start command |
-| Tasks visible to all devices | Implemented device token isolation via `X-Device-Token` header |
-| Past dates selectable | Added `min={today}` to date input |
-| Calendar not showing tasks | Fixed date format normalization (`slice(0, 10)`) |
-
----
-
-
+|-----------|----------|
+| MySQL socket connection error | Added `DB_SOCKET=` (empty) to force TCP connection |
+| Railway DB variables not resolving | Used Railway's `${{MySQL.VARIABLE}}` reference syntax |
+| Duplicate migration columns | Used `Schema::hasColumn()` guard before adding columns |
+| Container stopping immediately on deploy | Removed conflicting `railway.json` start command |
+| Tasks visible across all devices | Implemented device token isolation via `X-Device-Token` header |
