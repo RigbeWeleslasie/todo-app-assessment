@@ -26,11 +26,10 @@ A modern, responsive task management application built with React on the fronten
 
 ### Frontend
 - React, Tailwind CSS, Axios
-- Vercel (deployment - ready when upgraded)
+- Vercel (deployment)
 
 ### Backend
 - Laravel (PHP), MySQL, Docker
-- Render (deployment - ready when upgraded)
 
 ## Local Setup
 
