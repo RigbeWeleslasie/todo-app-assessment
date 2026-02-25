@@ -146,7 +146,7 @@ The backend is containerized with Docker and deployed on Railway. The following 
 | `DB_USERNAME` | `${{MySQL.MYSQLUSER}}` |
 | `DB_PASSWORD` | `${{MySQL.MYSQLPASSWORD}}` |
 
-### Frontend — React on Vercel
+### Frontend - React on Vercel
 
 The frontend deploys automatically on every push to `main` via Vercel's GitHub integration. One environment variable is required:
 
