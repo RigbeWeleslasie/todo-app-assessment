@@ -79,7 +79,7 @@ export default function TaskItem({ task, onComplete, onDelete, onUpdate }) {
                         </button>
                         <div className="flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                                <p className={`text-base font-semibold transition-all ${isCompleted ? 'text-gray-300' : 'text-gray-800'}`}>
+                                <p className={`text-base font-semibold transition-all ${isCompleted ? 'text-gray-300 line-through' : 'text-gray-800'}`}>
                                     {task.title}
                                 </p>
                                 {!isCompleted && (
