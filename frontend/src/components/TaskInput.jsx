@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
 export default function TaskInput({ onAdd }) {
-    const [title,       setTitle]       = useState('');
+    const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [dueDate,     setDueDate]     = useState('');
-    const [priority,    setPriority]    = useState('medium');
-    const [error,       setError]       = useState('');
+    const [dueDate, setDueDate] = useState('');
+    const [priority, setPriority] = useState('medium');
+    const [error, setError] = useState('');
 
     const handleSubmit = () => {
         if (!title.trim()) {
@@ -21,13 +21,13 @@ export default function TaskInput({ onAdd }) {
     };
 
     const priorityConfig = {
-        low:    { color: 'bg-blue-400',  text: 'text-blue-600',  ring: 'ring-blue-300'  },
+        low: { color: 'bg-blue-400', text: 'text-blue-600', ring: 'ring-blue-300' },
         medium: { color: 'bg-amber-400', text: 'text-amber-600', ring: 'ring-amber-300' },
-        high:   { color: 'bg-red-500',   text: 'text-red-600',   ring: 'ring-red-300'   },
+        high: { color: 'bg-red-500', text: 'text-red-600', ring: 'ring-red-300' },
     };
 
     return (
-        <div className="px-9 py-5 border-b border-gray-100">
+        <div className="px-4 md:px-9 pt-6 md:pt-9 pb-4 md:pb-5 border-b border-gray-100">
             <div className="flex gap-3">
                 <input
                     type="text"
@@ -62,8 +62,10 @@ export default function TaskInput({ onAdd }) {
                         type="date"
                         value={dueDate}
                         onChange={e => setDueDate(e.target.value)}
-                        className="bg-transparent text-sm text-gray-600 outline-none"
+                        min={new Date().toISOString().split('T')[0]}
+                        className="bg-transparent text-sm text-gray-600 outline-none w-full sm:w-auto"
                     />
+
                 </div>
 
                 <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-2xl px-3 py-2">
@@ -71,11 +73,10 @@ export default function TaskInput({ onAdd }) {
                         <button
                             key={p}
                             onClick={() => setPriority(p)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all ${
-                                priority === p
+                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all ${priority === p
                                     ? `${priorityConfig[p].color} text-white shadow-sm`
                                     : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
-                            }`}
+                                }`}
                         >
                             {p}
                         </button>
