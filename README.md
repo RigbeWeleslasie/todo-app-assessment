@@ -1,57 +1,44 @@
-# Todo List Application — Intern Technical Assessment
+# Task Tracker — Full Stack Todo App
 
-A full-stack Todo List application built with React, Tailwind CSS, Laravel, and MySQL.
+A simple, modern task management app built with **React** on the frontend and **Laravel** on the backend.  
+It’s designed to be fast, responsive, and easy to use — with automatic device-based task isolation (no login required).
 
-## Technologies Used
+---
 
-- **Frontend:** React 19, Tailwind CSS 3
-- **Backend:** Laravel 10 (PHP 8.1)
-- **Database:** MySQL
-- **API:** JSON over HTTP (Axios)
+## Live Demo
 
-## Setup and Installation
+- Frontend: https://todo-app-assessment-git-main-rigbes-projects.vercel.app  
+- Backend API: https://todo-app-assessment-production.up.railway.app/api/tasks  
 
-### Backend Setup
-```bash
-cd backend
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan db:seed
-php artisan serve --port=8001
-```
-
-### Frontend Setup
-```bash
-cd frontend
-npm install
-npm start
-```
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/tasks | Fetch all tasks |
-| POST | /api/tasks | Create a new task |
-| PUT | /api/tasks/{id} | Update a task |
-| DELETE | /api/tasks/{id} | Delete a task |
+---
 
 ## Features
-- Add, view, complete and delete tasks
-- Add notes and descriptions to tasks
-- Filter by All, Pending, Completed
-- Progress bar and stats panel
-- Delete confirmation dialog
-- Frontend error handling and loading states
 
-## Assumptions and Limitations
-- Requires both servers running simultaneously
-- Backend on port 8001, Frontend on port 3000
-- No authentication implemented
-- CORS configured for localhost only
+- Create, edit, and delete tasks (CRUD)
+- Priority levels: Low, Medium, High (color-coded)
+- Due dates with validation (today + future only)
+- Calendar view for better visualization
+- Task filtering (All, Pending, Completed)
+- Progress tracker showing completion percentage
+- Device-based isolation (each device sees its own tasks)
+- Fully responsive (mobile + desktop)
+- Instant UI updates
 
-## Author
-**Rigbe Weleslasie**
-Intern Technical Assessment — February 2026
+---
+
+## Tech Stack
+
+### Frontend
+- React 19
+- Tailwind CSS 3
+- Axios
+- Vercel (deployment)
+
+### Backend
+- Laravel (PHP 8.2)
+- MySQL
+- Docker
+- Railway (deployment)
+
+---
+
