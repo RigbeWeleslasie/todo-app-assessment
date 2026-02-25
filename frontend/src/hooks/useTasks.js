@@ -7,7 +7,7 @@ export default function useTasks() {
 
     const addTask = (title, description = '', due_date = null, priority = 'medium') => {
         api.post('/tasks', { title, description, due_date, priority, completed: false })
-            .then(res => setTasks(prev => [...prev, res.data]))
+            .then(res => setTasks(prev => [res.data, ...prev]))
             .catch(err => handleError(err, setError, 'Failed to add task.'));
     };
 
