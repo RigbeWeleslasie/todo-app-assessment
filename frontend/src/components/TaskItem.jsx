@@ -4,21 +4,29 @@ import handleError from '../utils/handleError';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
 const PRIORITY_STYLES = {
-    high:   { bar: 'bg-red-500',   badge: 'bg-red-100 text-red-600 border-red-200',       label: 'High'   },
-    medium: { bar: 'bg-amber-400', badge: 'bg-amber-100 text-amber-600 border-amber-200', label: 'Medium' },
-    low:    { bar: 'bg-blue-400',  badge: 'bg-blue-100 text-blue-600 border-blue-200',    label: 'Low'    },
+    high:   { bar: 'bg-green-500',   badge: 'bg-green-100 text-green-600', label: 'High' },
+    medium: { bar: 'bg-amber-400',   badge: 'bg-amber-100 text-amber-600', label: 'Medium' },
+    low:    { bar: 'bg-blue-400',    badge: 'bg-blue-100 text-blue-600',   label: 'Low' },
 };
 
 function formatDueDate(dateStr) {
     if (!dateStr) return null;
-    const date  = new Date(dateStr);
+    const [year, month, day] = dateStr.split('T')[0].split('-');
+    const date = new Date(year, month - 1, day);
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const diff = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
-    if (diff < 0)   return { label: 'Overdue',      color: 'text-red-500'    };
+
+    const diff = Math.floor((date - today) / (1000 * 60 * 60 * 24));
+
+    if (diff < 0)   return { label: 'Overdue',      color: 'text-red-500' };
     if (diff === 0) return { label: 'Due today',    color: 'text-orange-500' };
     if (diff === 1) return { label: 'Due tomorrow', color: 'text-yellow-500' };
-    return { label: `Due ${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`, color: 'text-gray-400' };
+
+    return {
+        label: `Due ${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`,
+        color: 'text-gray-400'
+    };
 }
 
 export default function TaskItem({ task, onComplete, onDelete, onUpdate }) {

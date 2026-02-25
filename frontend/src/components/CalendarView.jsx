@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 const PRIORITY_COLORS = {
-    high:   { bar: 'bg-red-500',    badge: 'bg-red-100 text-red-600',     dot: 'bg-red-500'    },
-    medium: { bar: 'bg-amber-400',  badge: 'bg-amber-100 text-amber-600', dot: 'bg-amber-400'  },
-    low:    { bar: 'bg-blue-400',   badge: 'bg-blue-100 text-blue-600',   dot: 'bg-blue-400'   },
+    high: { bar: 'bg-red-500', badge: 'bg-red-100 text-red-600', dot: 'bg-red-500' },
+    medium: { bar: 'bg-amber-400', badge: 'bg-amber-100 text-amber-600', dot: 'bg-amber-400' },
+    low: { bar: 'bg-blue-400', badge: 'bg-blue-100 text-blue-600', dot: 'bg-blue-400' },
 };
 
 function getDaysInMonth(year, month) {
@@ -14,16 +14,16 @@ function getFirstDayOfMonth(year, month) {
     return new Date(year, month, 1).getDay();
 }
 
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function CalendarView({ tasks }) {
-    const today     = new Date();
+    const today = new Date();
     const [current, setCurrent] = useState({ year: today.getFullYear(), month: today.getMonth() });
     const [selected, setSelected] = useState(today.getDate());
 
-    const daysInMonth  = getDaysInMonth(current.year, current.month);
-    const firstDay     = getFirstDayOfMonth(current.year, current.month);
+    const daysInMonth = getDaysInMonth(current.year, current.month);
+    const firstDay = getFirstDayOfMonth(current.year, current.month);
 
     const prevMonth = () => {
         setCurrent(c => {
@@ -42,8 +42,18 @@ export default function CalendarView({ tasks }) {
     };
     const getTasksForDay = (day) => {
         if (!day) return [];
-        const dateStr = `${current.year}-${String(current.month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        return tasks.filter(t => t.due_date && t.due_date.startsWith(dateStr));
+
+        return tasks.filter(task => {
+            if (!task.due_date) return false;
+
+            const taskDate = new Date(task.due_date);
+
+            return (
+                taskDate.getFullYear() === current.year &&
+                taskDate.getMonth() === current.month &&
+                taskDate.getDate() === day
+            );
+        });
     };
     const selectedTasks = selected ? getTasksForDay(selected) : [];
     const isToday = (day) =>
@@ -86,33 +96,32 @@ export default function CalendarView({ tasks }) {
                     <div key={`empty-${i}`} />
                 ))}
                 {Array.from({ length: daysInMonth }).map((_, i) => {
-                    const day       = i + 1;
-                    const dayTasks  = getTasksForDay(day);
-                    const hasHigh   = dayTasks.some(t => t.priority === 'high');
+                    const day = i + 1;
+                    const dayTasks = getTasksForDay(day);
+                    const hasHigh = dayTasks.some(t => t.priority === 'high');
                     const hasMedium = dayTasks.some(t => t.priority === 'medium');
-                    const hasLow    = dayTasks.some(t => t.priority === 'low');
+                    const hasLow = dayTasks.some(t => t.priority === 'low');
                     const isSelected = selected === day;
 
                     return (
                         <button
                             key={day}
                             onClick={() => setSelected(day)}
-                            className={`relative flex flex-col items-center py-1.5 rounded-xl transition-all ${
-                                isSelected
-                                    ? 'bg-gray-900 text-white'
-                                    : isToday(day)
+                            className={`relative flex flex-col items-center py-1.5 rounded-xl transition-all ${isSelected
+                                ? 'bg-gray-900 text-white'
+                                : isToday(day)
                                     ? 'bg-emerald-50 text-emerald-700'
                                     : 'hover:bg-gray-50 text-gray-700'
-                            }`}
+                                }`}
                         >
                             <span className={`text-sm font-semibold ${isSelected ? 'text-white' : ''}`}>
                                 {day}
                             </span>
                             {dayTasks.length > 0 && (
                                 <div className="flex gap-0.5 mt-0.5">
-                                    {hasHigh   && <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-red-300' : 'bg-red-500'}`} />}
+                                    {hasHigh && <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-red-300' : 'bg-red-500'}`} />}
                                     {hasMedium && <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-amber-300' : 'bg-amber-400'}`} />}
-                                    {hasLow    && <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-blue-300' : 'bg-blue-400'}`} />}
+                                    {hasLow && <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-blue-300' : 'bg-blue-400'}`} />}
                                 </div>
                             )}
                         </button>
@@ -123,9 +132,14 @@ export default function CalendarView({ tasks }) {
             <div className="flex-1 overflow-y-auto px-4 pb-4">
                 {selected && (
                     <>
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
                             {MONTHS[current.month]} {selected}
                         </p>
+
+                        {/* Added "Due" label */}
+                        {selectedTasks.length > 0 && (
+                            <p className="text-xs font-semibold text-gray-500 mb-2">Due</p>
+                        )}
 
                         {selectedTasks.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-8 gap-2">
@@ -143,14 +157,13 @@ export default function CalendarView({ tasks }) {
                                     return (
                                         <div
                                             key={task.id}
-                                            className={`flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-white hover:shadow-sm transition-all ${
-                                                task.completed ? 'opacity-50' : ''
-                                            }`}
+                                            className={`flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-white hover:shadow-sm transition-all ${task.completed ? 'opacity-50' : ''
+                                                }`}
                                         >
                                             <div className={`w-1 h-10 rounded-full flex-shrink-0 ${p.bar}`} />
 
                                             <div className="flex-1 min-w-0">
-                                                <p className={`text-sm font-semibold text-gray-800 truncate ${task.completed ? 'line-through' : ''}`}>
+                                                <p className={`text-sm font-semibold truncate ${task.completed ? 'text-gray-400' : 'text-gray-800'}`}>
                                                     {task.title}
                                                 </p>
                                                 {task.description && (

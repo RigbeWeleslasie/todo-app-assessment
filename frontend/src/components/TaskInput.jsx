@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 export default function TaskInput({ onAdd }) {
-    const [title,    setTitle]    = useState('');
-    const [dueDate,  setDueDate]  = useState('');
+    const [title, setTitle] = useState('');
+    const [dueDate, setDueDate] = useState('');
     const [priority, setPriority] = useState('medium');
-    const [error,    setError]    = useState('');
+    const [error, setError] = useState('');
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -38,7 +38,6 @@ export default function TaskInput({ onAdd }) {
                     className="w-full bg-transparent px-4 pt-4 pb-2 text-sm md:text-base text-gray-900 placeholder-gray-300 outline-none"
                 />
                 <div className="flex items-center justify-between px-3 pb-3 pt-1 gap-2">
-
                     <div className="flex items-center gap-3 flex-wrap">
                         <div className="flex items-center gap-1.5 text-gray-400">
                             <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -57,17 +56,20 @@ export default function TaskInput({ onAdd }) {
                             <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
                             </svg>
+
                             <select
                                 value={priority}
                                 onChange={e => setPriority(e.target.value)}
-                                className={`bg-transparent text-xs font-semibold outline-none cursor-pointer border rounded-lg px-2 py-1 transition-all ${priorityColors[priority]}`}
+                                className={`text-xs font-semibold outline-none cursor-pointer border rounded-lg px-2 py-1 transition-all 
+                                    ${priorityColors[priority]}`}
                             >
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
+                                <option value="low" className="text-blue-600 bg-blue-50">Low</option>
+                                <option value="medium" className="text-amber-600 bg-amber-50">Medium</option>
+                                <option value="high" className="text-green-600 bg-green-50">High</option>
                             </select>
                         </div>
                     </div>
+
                     <button
                         onClick={handleSubmit}
                         className="bg-gray-900 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded-xl transition-all active:scale-95 text-sm whitespace-nowrap"
