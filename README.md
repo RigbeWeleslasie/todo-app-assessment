@@ -159,4 +159,4 @@ The API validates all incoming requests:
 
 ---
 
-**Status:** ⚙️ Running locally in development mode. Ready to redeploy to Render/Railway when upgrading to a paid plan.
+**Status:** Running locally in development mode. Ready to redeploy to Render/Railway when upgrading to a paid plan.
