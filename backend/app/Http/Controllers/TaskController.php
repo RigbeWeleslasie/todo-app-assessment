@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 class TaskController extends Controller
 {
     public function index() {
-        return response()->json(Task::all());
+        return response()->json(Task::latest()->get());
     }
 
     public function store(Request $request) {
@@ -17,7 +17,6 @@ class TaskController extends Controller
             'priority'    => 'nullable|in:low,medium,high',
             'completed'   => 'nullable|boolean',
         ]);
-
         $task = Task::create($validated);
         return response()->json($task, 201);
     }
@@ -34,7 +33,6 @@ class TaskController extends Controller
             'priority'    => 'nullable|in:low,medium,high',
             'completed'   => 'nullable|boolean',
         ]);
-
         $task->update($validated);
         return response()->json($task);
     }
