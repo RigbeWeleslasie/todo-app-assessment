@@ -118,7 +118,7 @@ To redeploy to Render or Railway when upgrading to a paid plan, configure these 
 | DB_USERNAME | your database username |
 | DB_PASSWORD | your database password |
 
-### Frontend — React on Localhost (Currently)
+### Frontend - React on Localhost (Currently)
 The frontend is currently running locally for development.
 
 To redeploy to Vercel:
