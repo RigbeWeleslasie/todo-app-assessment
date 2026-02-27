@@ -1,13 +1,7 @@
 import { useState } from 'react';
-import api from '../api/axios';
-import handleError from '../utils/handleError';
 import DeleteConfirmModal from './DeleteConfirmModal';
-
-const PRIORITY_STYLES = {
-    high:   { bar: 'bg-green-500',   badge: 'bg-green-100 text-green-600', label: 'High' },
-    medium: { bar: 'bg-amber-400',   badge: 'bg-amber-100 text-amber-600', label: 'Medium' },
-    low:    { bar: 'bg-blue-400',    badge: 'bg-blue-100 text-blue-600',   label: 'Low' },
-};
+import PRIORITY_STYLES from '../constants/priorities';
+import useTaskDescription from '../hooks/useTaskDescription';
 
 function formatDueDate(dateStr) {
     if (!dateStr) return null;
@@ -30,27 +24,18 @@ function formatDueDate(dateStr) {
 }
 
 export default function TaskItem({ task, onComplete, onDelete, onUpdate }) {
-    const [expanded,      setExpanded]      = useState(false);
-    const [description,   setDescription]   = useState(task.description || '');
-    const [saving,        setSaving]        = useState(false);
-    const [error,         setError]         = useState('');
     const [confirmDelete, setConfirmDelete] = useState(false);
+
+    const {
+        expanded, setExpanded,
+        description, setDescription,
+        saving, error,
+        handleSaveDescription,
+    } = useTaskDescription(task, onUpdate);
 
     const isCompleted = task.completed === 1 || task.completed === true;
     const priority    = PRIORITY_STYLES[task.priority] || PRIORITY_STYLES.medium;
     const dueDate     = formatDueDate(task.due_date);
-
-    const handleSaveDescription = () => {
-        setSaving(true);
-        api.put('/tasks/' + task.id, { description })
-            .then(res => {
-                onUpdate(res.data);
-                setExpanded(false);
-                setError('');
-            })
-            .catch(err => handleError(err, setError, 'Failed to save description.'))
-            .finally(() => setSaving(false));
-    };
 
     return (
         <div className={`rounded-2xl border mb-3 transition-all duration-200 overflow-hidden ${
@@ -79,7 +64,7 @@ export default function TaskItem({ task, onComplete, onDelete, onUpdate }) {
                         </button>
                         <div className="flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                                <p className={`text-base font-semibold transition-all ${isCompleted ? 'text-gray-300 line-through' : 'text-gray-800'}`}>
+                                <p className={`text-base font-semibold transition-all ${isCompleted ? 'text-gray-500 line-through' : 'text-gray-800'}`}>
                                     {task.title}
                                 </p>
                                 {!isCompleted && (

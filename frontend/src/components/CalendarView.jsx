@@ -1,10 +1,5 @@
 import { useState } from 'react';
-
-const PRIORITY_COLORS = {
-    high: { bar: 'bg-red-500', badge: 'bg-red-100 text-red-600', dot: 'bg-red-500' },
-    medium: { bar: 'bg-amber-400', badge: 'bg-amber-100 text-amber-600', dot: 'bg-amber-400' },
-    low: { bar: 'bg-blue-400', badge: 'bg-blue-100 text-blue-600', dot: 'bg-blue-400' },
-};
+import PRIORITY_STYLES from '../constants/priorities';
 
 function getDaysInMonth(year, month) {
     return new Date(year, month + 1, 0).getDate();
@@ -136,7 +131,6 @@ export default function CalendarView({ tasks }) {
                             {MONTHS[current.month]} {selected}
                         </p>
 
-                        {/* Added "Due" label */}
                         {selectedTasks.length > 0 && (
                             <p className="text-xs font-semibold text-gray-500 mb-2">Due</p>
                         )}
@@ -153,7 +147,7 @@ export default function CalendarView({ tasks }) {
                         ) : (
                             <div className="flex flex-col gap-2">
                                 {selectedTasks.map(task => {
-                                    const p = PRIORITY_COLORS[task.priority] || PRIORITY_COLORS.medium;
+                                    const p = PRIORITY_STYLES[task.priority] || PRIORITY_STYLES.medium;
                                     return (
                                         <div
                                             key={task.id}
@@ -163,7 +157,7 @@ export default function CalendarView({ tasks }) {
                                             <div className={`w-1 h-10 rounded-full flex-shrink-0 ${p.bar}`} />
 
                                             <div className="flex-1 min-w-0">
-                                                <p className={`text-sm font-semibold truncate ${task.completed ? 'text-gray-400' : 'text-gray-800'}`}>
+                                                <p className={`text-sm font-semibold truncate ${task.completed ? 'text-gray-500 line-through' : 'text-gray-800'}`}>
                                                     {task.title}
                                                 </p>
                                                 {task.description && (

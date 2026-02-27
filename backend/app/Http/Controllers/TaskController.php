@@ -1,21 +1,14 @@
 <?php
 namespace App\Http\Controllers;
+
 use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    private function getToken(Request $request) {
-        return $request->header('X-Device-Token');
-    }
-
     public function index(Request $request) {
-        $token = $this->getToken($request);
-        if (!$token) {
-            return response()->json([]);
-        }
         return response()->json(
-            Task::where('device_token', $token)->latest()->get()
+            Task::where('user_id', $request->user()->id)->latest()->get()
         );
     }
 
@@ -28,7 +21,7 @@ class TaskController extends Controller
             'completed'   => 'nullable|boolean',
         ]);
 
-        $validated['device_token'] = $this->getToken($request);
+        $validated['user_id'] = $request->user()->id;
         $task = Task::create($validated);
         return response()->json($task, 201);
     }

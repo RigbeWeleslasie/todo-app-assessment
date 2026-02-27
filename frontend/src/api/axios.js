@@ -1,16 +1,7 @@
 import axios from 'axios';
 
-const getDeviceToken = () => {
-    let token = localStorage.getItem('device_token');
-    if (!token) {
-        token = 'dt_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-        localStorage.setItem('device_token', token);
-    }
-    return token;
-};
-
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || 'https://todo-app-assessment-production.up.railway.app/api',
+    baseURL: process.env.REACT_APP_API_URL,
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -18,9 +9,23 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-    config.headers['X-Device-Token'] = getDeviceToken();
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
     return config;
 });
+
+api.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('auth_token');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
 
 export async function saveTask(task) {
     const response = await api.post('/tasks', task);

@@ -10,6 +10,6 @@ class Task extends Model
         'completed',
         'due_date',
         'priority',
-        'device_token',
+        'user_id',
     ];
 }

@@ -1,48 +1,16 @@
-import { useState } from 'react';
-import { saveTask } from '../api/axios';
+import useTaskInput from '../hooks/useTaskInput';
+import PRIORITY_STYLES from '../constants/priorities';
 
 export default function TaskInput({ onAdd }) {
-    const [title, setTitle] = useState('');
-    const [dueDate, setDueDate] = useState('');
-    const [priority, setPriority] = useState('medium');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-
-    const today = new Date().toISOString().split('T')[0];
-
-    const priorityColors = {
-        low:    'text-blue-600 bg-blue-50 border-blue-200',
-        medium: 'text-amber-600 bg-amber-50 border-amber-200',
-        high:   'text-green-600 bg-green-50 border-green-200',
-    };
-
-    const handleSubmit = async () => {
-        if (!title.trim()) {
-            setError('Please enter a task title!');
-            return;
-        }
-
-        const newTask = {
-            title: title.trim(),
-            due_date: dueDate || null,
-            priority,
-            completed: false,
-        };
-
-        try {
-            setLoading(true);
-            const savedTask = await saveTask(newTask);
-            onAdd(savedTask);
-            setTitle('');
-            setDueDate('');
-            setPriority('medium');
-            setError('');
-        } catch (err) {
-            setError(err.response?.data?.message || 'Failed to save task. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const {
+        title, setTitle,
+        dueDate, setDueDate,
+        priority, setPriority,
+        error,
+        loading,
+        today,
+        handleSubmit,
+    } = useTaskInput(onAdd);
 
     return (
         <div className="px-4 md:px-9 py-4 md:py-5 border-b border-gray-100">
@@ -55,7 +23,6 @@ export default function TaskInput({ onAdd }) {
                     placeholder="What needs to be done today?"
                     className="w-full bg-transparent px-4 pt-4 pb-2 text-sm md:text-base text-gray-900 placeholder-gray-300 outline-none"
                 />
-
                 <div className="flex items-center justify-between px-3 pb-3 pt-1 gap-2">
                     <div className="flex items-center gap-3 flex-wrap">
                         <div className="flex items-center gap-1.5 text-gray-400">
@@ -77,7 +44,7 @@ export default function TaskInput({ onAdd }) {
                             <select
                                 value={priority}
                                 onChange={e => setPriority(e.target.value)}
-                                className={`text-xs font-semibold outline-none cursor-pointer border rounded-lg px-2 py-1 transition-all ${priorityColors[priority]}`}
+                                className={`text-xs font-semibold outline-none cursor-pointer border rounded-lg px-2 py-1 transition-all ${PRIORITY_STYLES[priority].badge}`}
                             >
                                 <option value="low">Low</option>
                                 <option value="medium">Medium</option>
@@ -99,7 +66,6 @@ export default function TaskInput({ onAdd }) {
                     </button>
                 </div>
             </div>
-
             {error && <p className="text-red-400 text-sm mt-2 pl-1">{error}</p>}
         </div>
     );
